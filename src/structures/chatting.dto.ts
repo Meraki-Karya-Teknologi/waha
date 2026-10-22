@@ -192,6 +192,10 @@ export class MessageTextRequest extends ChatRequest {
   @IsOptional()
   reply_to?: string;
 
+  /** Internal: set by the controller when the native "@all" marker must be sent (WEBJS only). */
+  @ApiHideProperty()
+  nativeMentionAll?: boolean;
+
   linkPreview?: boolean = true;
   linkPreviewHighQuality?: boolean = false;
 }

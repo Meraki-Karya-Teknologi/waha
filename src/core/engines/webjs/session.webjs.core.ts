@@ -226,6 +226,7 @@ import {
 } from '@waha/core/env';
 import { removeSingletonFiles } from '@waha/core/utils/chrome';
 import { killProcessesByPatterns } from '@waha/core/utils/processes';
+import { parseMentionAllMode } from '@waha/core/utils/mentions.all.plan';
 import { IsChrome } from '@waha/version';
 
 import { Activity } from '@waha/core/abc/session.hooks.activity';
@@ -2901,6 +2902,11 @@ export class WhatsappSessionWebJSCore extends WhatsappSession {
     return null;
   }
 
+  /** WAHA_WEBJS_MENTION_ALL=expand|native|both (default expand = old behaviour). */
+  public mentionAllMode() {
+    return parseMentionAllMode(process.env.WAHA_WEBJS_MENTION_ALL);
+  }
+
   protected async getMessageOptions(request: any): Promise<any> {
     let mentions: string[] | undefined = request.mentions;
     if (mentions) {
@@ -2913,11 +2919,16 @@ export class WhatsappSessionWebJSCore extends WhatsappSession {
 
     const quotedMessageId = request.reply_to || request.replyTo;
 
-    return {
+    const options: any = {
       mentions: mentions,
       quotedMessageId: quotedMessageId,
       linkPreview: request.linkPreview,
     };
+    if (request.nativeMentionAll) {
+      // Native WhatsApp "@all": marker only, passed through whatsapp-web.js `extra` into the message.
+      options.extra = { ...(options.extra || {}), nonJidMentions: 1 };
+    }
+    return options;
   }
 }
 
