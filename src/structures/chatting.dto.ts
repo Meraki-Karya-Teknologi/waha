@@ -1,4 +1,9 @@
-import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiHideProperty,
+  ApiProperty,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { IsFileType } from '@waha/nestjs/validation/IsFileType';
 import { TrimString, TrimStrings } from '@waha/nestjs/validation/TrimString';
 import { GetChatMessagesQuery } from '@waha/structures/chats.dto';
