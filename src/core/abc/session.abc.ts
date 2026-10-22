@@ -1297,6 +1297,11 @@ export abstract class WhatsappSession {
     return fetchBuffer(url);
   }
 
+  /** How `mentions: ["all"]` is sent. Engines may override (see mentions.all.plan.ts). */
+  public mentionAllMode(): 'expand' | 'native' | 'both' {
+    return 'expand';
+  }
+
   public async resolveMentionsAll(chatId: string): Promise<string[]> {
     const participants = await this.getGroupParticipants(chatId);
     let mentions = participants.map((p) => p.id);

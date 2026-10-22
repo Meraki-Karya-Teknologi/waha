@@ -51,6 +51,7 @@ import {
   mentionsAll,
   validateRequestMentions,
 } from '@waha/core/utils/mentions.all';
+import { planMentionsAll } from '@waha/core/utils/mentions.all.plan';
 import {
   SessionApiParam,
   WorkingSessionParam,
@@ -81,7 +82,13 @@ export class ChattingController {
     const whatsapp = await this.manager.getWorkingSession(request.session);
     if (mentionsAll(request)) {
       validateRequestMentions(request);
-      request.mentions = await whatsapp.resolveMentionsAll(request.chatId);
+      const plan = await planMentionsAll(
+        request.mentions,
+        whatsapp.mentionAllMode(),
+        () => whatsapp.resolveMentionsAll(request.chatId),
+      );
+      request.mentions = plan.mentions;
+      request.nativeMentionAll = plan.native;
     }
     return whatsapp.sendText(request);
   }
